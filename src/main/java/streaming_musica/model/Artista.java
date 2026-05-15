@@ -15,13 +15,11 @@ public class Artista {
     private String id = UUID.randomUUID().toString();
     private String nombre;
     private String pais;
-    private Productora productora;
     private List<Cancion> canciones = new ArrayList<>();
 
     //Constuctor
-    public Artista(String nombre, String pais, Productora productora){
+    public Artista(String nombre, String pais){
         this.nombre = nombre;
         this.pais = pais;
-        this.productora = productora;
     }
 }
