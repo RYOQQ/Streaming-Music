@@ -114,6 +114,17 @@ public class CancionController {
         @PathVariable String id,
         @RequestParam(defaultValue = "genero") String tipo) {
 
-    return ResponseEntity.ok(cancionService.recomendar(id, tipo));
+        return ResponseEntity.ok(cancionService.recomendar(id, tipo));
+    }
+
+    @PostMapping("/{id}/reproducir-concurrente")
+    public ResponseEntity<Cancion> reproducirConcurrentemente(
+        @PathVariable String id,
+        @RequestParam(defaultValue = "5") int cantidadHilos,
+        @RequestParam(defaultValue = "100") int reproduccionesPorHilo) {
+
+        return cancionService.reproducirConcurrentemente(id, cantidadHilos, reproduccionesPorHilo)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 }

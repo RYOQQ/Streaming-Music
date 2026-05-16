@@ -242,4 +242,37 @@ public class CancionService {
             cancionBase.get()
         );
     }
+
+    public Optional<Cancion> reproducirConcurrentemente(String id, int cantidadHilos, int reproduccionesPorHilo) {
+        Optional<Cancion> cancionBuscada = buscarPorId(id);
+
+        if (cancionBuscada.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Cancion cancion = cancionBuscada.get();
+
+        List<Thread> hilos = new ArrayList<>();
+
+        for (int i = 0; i < cantidadHilos; i++) {
+            Thread hilo = new Thread(() -> {
+                for (int j = 0; j < reproduccionesPorHilo; j++) {
+                    cancion.reproducir();
+                }
+            });
+
+            hilos.add(hilo);
+            hilo.start();
+        }
+
+        for (Thread hilo : hilos) {
+            try {
+                hilo.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        return Optional.of(cancion);
+    }
 }
