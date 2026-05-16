@@ -5,6 +5,11 @@ import streaming_musica.model.Cancion;
 import streaming_musica.model.Genero;
 import streaming_musica.repository.CancionRepository;
 
+import streaming_musica.strategy.EstrategiaRecomendacion;
+import streaming_musica.strategy.RecomendacionPorGenero;
+import streaming_musica.strategy.RecomendacionPorPopularidad;
+import streaming_musica.strategy.RecomendacionDescubrimiento;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -202,6 +207,39 @@ public class CancionService {
             segundosRestantes,
             indice + 1,
             seleccionadas
+        );
+    }
+
+    public List<Cancion> recomendar(String idCancionBase, String tipo) {
+        Optional<Cancion> cancionBase = buscarPorId(idCancionBase);
+
+        if (cancionBase.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        EstrategiaRecomendacion estrategia;
+
+        switch (tipo.toLowerCase()) {
+            case "genero":
+                estrategia = new RecomendacionPorGenero();
+                break;
+
+            case "popularidad":
+                estrategia = new RecomendacionPorPopularidad();
+                break;
+
+            case "descubrimiento":
+                estrategia = new RecomendacionDescubrimiento();
+                break;
+
+            default:
+                estrategia = new RecomendacionPorGenero();
+                break;
+        }
+
+        return estrategia.recomendar(
+            repositorio.obtenerTodas(),
+            cancionBase.get()
         );
     }
 }

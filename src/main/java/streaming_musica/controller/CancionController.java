@@ -108,4 +108,12 @@ public class CancionController {
     public ResponseEntity<List<Cancion>> playlistAutomatica(@RequestParam int minutos) {
         return ResponseEntity.ok(cancionService.playlistAutomatica(minutos));
     }
+
+    @GetMapping("/{id}/recomendaciones")
+    public ResponseEntity<List<Cancion>> recomendar(
+        @PathVariable String id,
+        @RequestParam(defaultValue = "genero") String tipo) {
+
+    return ResponseEntity.ok(cancionService.recomendar(id, tipo));
+    }
 }
